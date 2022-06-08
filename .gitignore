@@ -127,3 +127,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# my gitignore
+
+/experiment-tracking/resources
+
+/experiment-tracking/env
+
+/Introduction/resources
+
+/Introduction/notebooks/.ipynb_checkpoints

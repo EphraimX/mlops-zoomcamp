@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/PC/Desktop/ML/Q2-2022/MLops%20ZoomCamp/Module%20Two/homework/mlruns/0/41a4734a1b604f73979a6fe31fb642dd/artifacts
+end_time: 1654117120257
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 41a4734a1b604f73979a6fe31fb642dd
+run_uuid: 41a4734a1b604f73979a6fe31fb642dd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1654117079248
+status: 3
+tags: []
+user_id: PC
