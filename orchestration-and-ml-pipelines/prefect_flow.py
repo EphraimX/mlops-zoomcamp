@@ -149,4 +149,3 @@ def main(train_path="./data/green_tripdata_2021-01.parquet",
     # train_model_search(train, valid, y_val)
     train_best_model(train, valid, y_val, dv)
 
-main()
