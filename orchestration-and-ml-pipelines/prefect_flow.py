@@ -1,4 +1,5 @@
 from audioop import add
+from wsgiref.headers import tspecials
 import pandas as pd
 import pickle
 
@@ -14,7 +15,9 @@ from hyperopt.pyll import scope
 import mlflow
 
 from prefect import flow, task
+from prefect.task_runners import SequentialTaskRunner
 
+@task
 def read_dataframe(filename):
     df = pd.read_parquet(filename)
 
@@ -32,9 +35,9 @@ def read_dataframe(filename):
     return df
 
 @task
-def add_features(train_path, val_path):
-    df_train = read_dataframe(train_path)
-    df_val = read_dataframe(val_path)
+def add_features(df_train, df_val):
+    # df_train = read_dataframe(train_path)
+    # df_val = read_dataframe(val_path)
 
     print(len(df_train))
     print(len(df_val))
@@ -60,7 +63,7 @@ def add_features(train_path, val_path):
     return X_train, X_val, y_train, y_val, dv
 
 
-
+@task
 def train_model_search(train, valid, y_val):
     def objective(params):
         with mlflow.start_run():
@@ -98,6 +101,7 @@ def train_model_search(train, valid, y_val):
     )
     return
 
+@task
 def train_best_model(train, valid, y_val, dv):
     with mlflow.start_run():        
 
@@ -131,13 +135,15 @@ def train_best_model(train, valid, y_val, dv):
 
         mlflow.xgboost.log_model(booster, artifact_path="models_mlflow")
 
-@flow
+@flow(task_runner=SequentialTaskRunner())
 def main(train_path="./data/green_tripdata_2021-01.parquet",
         val_path="./data/green_tripdata_2021-02.parquet"):
 
     mlflow.set_tracking_uri("sqlite:///mlflow.db")
     mlflow.set_experiment("nyc-taxi-experiment")
-    X_train, X_val, y_train, y_val, dv = add_features(train_path, val_path).result()
+    X_train = read_dataframe(train_path)
+    X_val = read_dataframe(val_path)
+    X_train, X_val, y_train, y_val, dv = add_features(X_train, X_val).result()
     train = xgb.DMatrix(X_train, label=y_train)
     valid = xgb.DMatrix(X_val, label=y_val)
     # train_model_search(train, valid, y_val)
