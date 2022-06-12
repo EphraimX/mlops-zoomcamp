@@ -16,7 +16,12 @@ def read_data(path):
 
 @task
 def prepare_features(df, categorical, train=True):
-    df['duration'] = df.dropOff_datetime - df.pickup_datetime
+
+    df.lpep_dropoff_datetime = pd.to_datetime(df.lpep_dropoff_datetime)
+    df.lpep_pickup_datetime = pd.to_datetime(df.lpep_pickup_datetime)
+
+
+    df['duration'] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
     df['duration'] = df.duration.dt.total_seconds() / 60
     df = df[(df.duration >= 1) & (df.duration <= 60)].copy()
 
@@ -65,7 +70,7 @@ def run_model(df, categorical, dv, lr):
 def main(train_path: str = './data/fhv_tripdata_2021-01.parquet', 
            val_path: str = './data/fhv_tripdata_2021-02.parquet'):
 
-    categorical = ['PUlocationID', 'DOlocationID']
+    categorical = ['PULocationID', 'DOLocationID']
 
     df_train = read_data(train_path).result()
     df_train_processed = prepare_features(df_train, categorical).result()
