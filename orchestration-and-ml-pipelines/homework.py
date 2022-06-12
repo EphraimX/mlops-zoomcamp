@@ -39,7 +39,7 @@ def prepare_features(df, categorical, train=True):
 
 def get_paths(date=None):
     if date == None:
-        pass
+        ...
     else:
         pass
 
