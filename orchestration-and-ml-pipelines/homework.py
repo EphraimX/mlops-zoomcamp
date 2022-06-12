@@ -7,6 +7,8 @@ from sklearn.metrics import mean_squared_error
 from prefect import flow, task
 from prefect import get_run_logger
 
+import datetime
+
 
 @task
 def read_data(path):
@@ -33,6 +35,13 @@ def prepare_features(df, categorical, train=True):
     
     df[categorical] = df[categorical].fillna(-1).astype('int').astype('str')
     return df
+
+
+def get_paths(date=None):
+    if date == None:
+        pass
+    else:
+        pass
 
 
 @task
