@@ -9,6 +9,8 @@ from prefect import get_run_logger
 
 from datetime import datetime, date
 
+import pickle
+
 
 @task
 def read_data(path):
@@ -117,6 +119,15 @@ def main(date_=None):
 
     # train the model
     lr, dv = train_model(df_train_processed, categorical).result()
+
+    # save the model
+
+    with open(f"models/model-{date_}.bin", "wb") as lr_out:
+        pickle.dump(lr, lr_out)
+    
+    with open(f"models/dv-{date_}.b", "wb") as dv_out:
+        pickle.dump(dv, dv_out)
+
     run_model(df_val_processed, categorical, dv, lr)
 
 main("2021-08-15")
