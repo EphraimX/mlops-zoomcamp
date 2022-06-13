@@ -130,7 +130,7 @@ def main(date_=None):
 
     run_model(df_val_processed, categorical, dv, lr)
 
-main("2021-08-15")
+
 # model deployment using CronSchedule
 
 from prefect.deployments import DeploymentSpec
