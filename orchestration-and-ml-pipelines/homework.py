@@ -19,11 +19,11 @@ def read_data(path):
 @task
 def prepare_features(df, categorical, train=True):
 
-    df.lpep_dropoff_datetime = pd.to_datetime(df.lpep_dropoff_datetime)
-    df.lpep_pickup_datetime = pd.to_datetime(df.lpep_pickup_datetime)
+    # df.lpep_dropoff_datetime = pd.to_datetime(df.lpep_dropoff_datetime)
+    # df.lpep_pickup_datetime = pd.to_datetime(df.lpep_pickup_datetime)
 
 
-    df['duration'] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
+    df['duration'] = df.dropOff_datetime - df.pickup_datetime
     df['duration'] = df.duration.dt.total_seconds() / 60
     df = df[(df.duration >= 1) & (df.duration <= 60)].copy()
 
@@ -107,7 +107,7 @@ def main(date_=None):
     
     train_path, val_path = get_paths(date_value=date_).result()
 
-    categorical = ['PULocationID', 'DOLocationID']
+    categorical = ['PUlocationID', 'DOlocationID']
 
     df_train = read_data(train_path).result()
     df_train_processed = prepare_features(df_train, categorical).result()
@@ -119,4 +119,4 @@ def main(date_=None):
     lr, dv = train_model(df_train_processed, categorical).result()
     run_model(df_val_processed, categorical, dv, lr)
 
-main("2021-03-15")
+main("2021-08-15")
