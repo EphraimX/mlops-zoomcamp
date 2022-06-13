@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error
 from prefect import flow, task
 from prefect import get_run_logger
 
-import datetime
+from datetime import datetime, date
 
 
 @task
@@ -36,12 +36,38 @@ def prepare_features(df, categorical, train=True):
     df[categorical] = df[categorical].fillna(-1).astype('int').astype('str')
     return df
 
+@task
+def get_paths(date_value=None):
 
-def get_paths(date=None):
-    if date == None:
-        ...
+    if date_value == None:
+        date_value = date.today().strftime("%Y-%m-%d")
+
+    new_date = date_value.split('-')
+    year, month, day = new_date[0], new_date[1], new_date[2]
+    year, month, day = int(year), int(month), int(day)
+
+    new_date = date(year, month, day)
+        
+
+    if new_date.month != 1 and new_date.month != 2:
+        train_month , train_year = (new_date.month-2, new_date.year)
+    elif new_date.month == 1:
+        train_month , train_year = (11, new_date.year-1)
     else:
-        pass
+        train_month , train_year = (12, new_date.year-1)
+
+    train_date = new_date.replace(day=1, month=train_month, year=train_year)
+    train_date = train_date.strftime('%Y-%m')
+        
+
+    val_month , val_year = (new_date.month-1, new_date.year) if new_date.month != 1 else (12, new_date.year-1)
+    val_date = new_date.replace(day=1, month=val_month, year=val_year)
+    val_date = val_date.strftime('%Y-%m')
+
+    train_path = f'./data/fhv_tripdata_{train_date}.parquet'
+    val_path = f'./data/fhv_tripdata_{val_date}.parquet'
+
+    return train_path, val_path
 
 
 @task
@@ -76,8 +102,10 @@ def run_model(df, categorical, dv, lr):
 
 
 @flow
-def main(train_path: str = './data/fhv_tripdata_2021-01.parquet', 
-           val_path: str = './data/fhv_tripdata_2021-02.parquet'):
+def main(date_=None):
+
+    
+    train_path, val_path = get_paths(date_value=date_).result()
 
     categorical = ['PULocationID', 'DOLocationID']
 
@@ -91,4 +119,4 @@ def main(train_path: str = './data/fhv_tripdata_2021-01.parquet',
     lr, dv = train_model(df_train_processed, categorical).result()
     run_model(df_val_processed, categorical, dv, lr)
 
-main()
+main("2021-03-15")
