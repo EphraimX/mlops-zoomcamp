@@ -138,3 +138,5 @@ dmypy.json
 /Introduction/resources
 
 /Introduction/notebooks/.ipynb_checkpoints
+
+/.prefect
