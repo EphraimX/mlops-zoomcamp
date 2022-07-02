@@ -140,3 +140,5 @@ dmypy.json
 /Introduction/notebooks/.ipynb_checkpoints
 
 /.prefect
+
+/model-deployment/resources
