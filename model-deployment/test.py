@@ -5,5 +5,7 @@ ride = {
     "DOLocationID": 50,
     "trip_distance": 40 
 }
-pred = predict.predict(ride)
+
+features = predict.prepare_features(ride)
+pred = predict.predict(features)
 print(pred)
