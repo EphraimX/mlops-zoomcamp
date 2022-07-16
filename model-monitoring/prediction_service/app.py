@@ -1,5 +1,6 @@
 import os
 import pickle
+import warnings
 
 import requests
 from flask import Flask
@@ -8,8 +9,11 @@ from flask import jsonify
 
 from pymongo import MongoClient
 
+import _warnings
+warnings.warn("ignore")
 
-MODEL_FILE = os.getenv('MODEL_FILE', 'lin_reg.bin')
+
+MODEL_FILE = os.getenv('MODEL_FILE', 'model.bin')
 
 EVIDENTLY_SERVICE_ADDRESS = os.getenv('EVIDENTLY_SERVICE', 'http://127.0.0.1:5000')
 MONGODB_ADDRESS = os.getenv("MONGODB_ADDRESS", "mongodb://127.0.0.1:27017")

@@ -1,4 +1,4 @@
-from crypt import methods
+# from crypt import methods
 import os
 import pickle
 import re
