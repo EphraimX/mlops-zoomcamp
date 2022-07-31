@@ -144,3 +144,5 @@ dmypy.json
 /model-deployment/resources
 
 /model-monitoring/resources
+
+/testing-and-integration/resources
